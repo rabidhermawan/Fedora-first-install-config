@@ -124,6 +124,27 @@ color_echo "yellow" "Installing GitHub Desktop..."
 flatpak install -y flathub io.github.shiftey.Desktop
 color_echo "green" "GitHub Desktop installed successfully."
 
+# Install Docker
+# Remove old docker stuff if exists
+color_echo "yellow" "Installing Docker"
+dnf remove docker \
+    docker-client \
+    docker-client-latest \
+    docker-common \
+    docker-latest \
+    docker-latest-logrotate \
+    docker-logrotate \
+    docker-selinux \
+    docker-engine-selinux \
+    docker-engine -y
+
+# Add Docker repo
+dnf config-manager addrepo --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo
+
+# Install all Docker stuff
+dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+color_echo "green" "Docker installed successfully."
+
 # Install Media & Graphics applications
 color_echo "yellow" "Installing Spotify..."
 flatpak install -y flathub com.spotify.Client
