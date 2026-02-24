@@ -1,8 +1,4 @@
 #!/bin/bash
-# "Things To Do!" script for a fresh Fedora Workstation installation
-
-
-
 # Check if the script is run with sudo
 if [ "$EUID" -ne 0 ]; then
     echo "Please run this script with sudo"
@@ -70,28 +66,8 @@ backup_file() {
     fi
 }
 
-echo "";
-echo "╔═════════════════════════════════════════════════════════════════════════════╗";
-echo "║                                                                             ║";
-echo "║   ░█▀▀░█▀▀░█▀▄░█▀█░█▀▄░█▀█░░░█░█░█▀█░█▀▄░█░█░█▀▀░▀█▀░█▀█░▀█▀░▀█▀░█▀█░█▀█░   ║";
-echo "║   ░█▀▀░█▀▀░█░█░█░█░█▀▄░█▀█░░░█▄█░█░█░█▀▄░█▀▄░▀▀█░░█░░█▀█░░█░░░█░░█░█░█░█░   ║";
-echo "║   ░▀░░░▀▀▀░▀▀░░▀▀▀░▀░▀░▀░▀░░░▀░▀░▀▀▀░▀░▀░▀░▀░▀▀▀░░▀░░▀░▀░░▀░░▀▀▀░▀▀▀░▀░▀░   ║";
-echo "║   ░░░░░░░░░░░░▀█▀░█░█░▀█▀░█▀█░█▀▀░█▀▀░░░▀█▀░█▀█░░░█▀▄░█▀█░█░░░░░░░░░░░░░░   ║";
-echo "║   ░░░░░░░░░░░░░█░░█▀█░░█░░█░█░█░█░▀▀█░░░░█░░█░█░░░█░█░█░█░▀░░░░░░░░░░░░░░   ║";
-echo "║   ░░░░░░░░░░░░░▀░░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░░░░▀░░▀▀▀░░░▀▀░░▀▀▀░▀░░░░░░░░░░░░░░   ║";
-echo "║                                                                             ║";
-echo "╚═════════════════════════════════════════════════════════════════════════════╝";
-echo "";
-echo "This script automates \"Things To Do!\" steps after a fresh Fedora Workstation installation"
+echo "Scripts for installing stuff"
 echo "ver. 25.03"
-echo ""
-echo "Don't run this script if you didn't build it yourself or don't know what it does."
-echo ""
-read -p "Press Enter to continue or CTRL+C to cancel..."
-
-# Disable suspend, hibernate, etc
-color_echo "blue" "Disabling suspend and hibernate"
-systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 
 # System Upgrade
 color_echo "blue" "Performing system upgrade... This may take a while..."
@@ -99,11 +75,6 @@ dnf upgrade -y
 
 
 # System Configuration
-# Optimize DNF package manager for faster downloads and efficient updates
-color_echo "yellow" "Configuring DNF Package Manager..."
-backup_file "/etc/dnf/dnf.conf"
-echo "max_parallel_downloads=10" | tee -a /etc/dnf/dnf.conf > /dev/null
-dnf -y install dnf-plugins-core
 
 # Replace Fedora Flatpak Repo with Flathub for better package management and apps stability
 color_echo "yellow" "Replacing Fedora Flatpak Repo with Flathub..."
@@ -112,12 +83,6 @@ flatpak remote-delete fedora --force || true
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 sudo flatpak repair
 flatpak update
-
-# Check and apply firmware updates to improve hardware compatibility and performance
-color_echo "yellow" "Checking for firmware updates..."
-fwupdmgr refresh --force
-fwupdmgr get-updates
-fwupdmgr update -y
 
 # Enable RPM Fusion repositories to access additional software packages and codecs
 color_echo "yellow" "Enabling RPM Fusion repositories..."
@@ -139,50 +104,55 @@ dnf install -y btop fastfetch unzip git wget curl
 color_echo "green" "Essential applications installed successfully."
 
 # Install Internet & Communication applications
-color_echo "yellow" "Installing Discord..."
-dnf install -y discord
-color_echo "green" "Discord installed successfully."
+color_echo "yellow" "Installing Vesktop..."
+flatpak install -y flathub dev.vencord.Vesktop
+color_echo "green" "Vesktop installed successfully."
 
 # Install Coding and DevOps applications
 color_echo "yellow" "Installing Visual Studio Code..."
-sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-echo -e "[code]
-name=Visual Studio Code
-baseurl=https://packages.microsoft.com/yumrepos/vscode
-enabled=1
-gpgcheck=1
-gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
+
+rpm --import https://packages.microsoft.com/keys/microsoft.asc &&
+echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
+
 dnf check-update
 dnf install -y code
+
 color_echo "green" "Visual Studio Code installed successfully."
 color_echo "yellow" "Installing GitHub Desktop..."
+
+# Install Github
 flatpak install -y flathub io.github.shiftey.Desktop
 color_echo "green" "GitHub Desktop installed successfully."
 
 # Install Media & Graphics applications
-color_echo "yellow" "Installing VLC..."
-dnf install -y vlc
-color_echo "green" "VLC installed successfully."
 color_echo "yellow" "Installing Spotify..."
 flatpak install -y flathub com.spotify.Client
 color_echo "green" "Spotify installed successfully."
+
 color_echo "yellow" "Installing OBS Studio..."
 dnf install -y obs-studio
 color_echo "green" "OBS Studio installed successfully."
 
 # Install Gaming & Emulation applications
-color_echo "yellow" "Installing Steam..."
-dnf install -y steam
-color_echo "green" "Steam installed successfully."
-color_echo "yellow" "Installing Lutris..."
-dnf install -y lutris
-color_echo "green" "Lutris installed successfully."
-color_echo "yellow" "Installing Heroic Games Launcher..."
-flatpak install -y flathub com.heroicgameslauncher.hgl
-color_echo "green" "Heroic Games Launcher installed successfully."
-color_echo "yellow" "Installing Dolphin..."
-flatpak install -y flathub org.DolphinEmu.dolphin-emu
-color_echo "green" "Dolphin installed successfully."
+# color_echo "yellow" "Installing Steam..."
+# dnf install -y steam
+# color_echo "green" "Steam installed successfully."
+
+# color_echo "yellow" "Installing Lutris..."
+# dnf install -y lutris
+# color_echo "green" "Lutris installed successfully."
+
+# color_echo "yellow" "Installing Heroic Games Launcher..."
+# flatpak install -y flathub com.heroicgameslauncher.hgl
+# color_echo "green" "Heroic Games Launcher installed successfully."
+
+# color_echo "yellow" "Installing Dolphin..."
+# flatpak install -y flathub org.DolphinEmu.dolphin-emu
+# color_echo "green" "Dolphin installed successfully."
+
+# color_echo "yellow" "Installing ProtonUp-Qt..."
+# flatpak install -y flathub net.davidotek.pupgui2
+# color_echo "green" "ProtonUp-Qt installed successfully."
 
 # Install File Sharing & Download applications
 color_echo "yellow" "Installing qBittorrent..."
@@ -193,9 +163,6 @@ color_echo "green" "qBittorrent installed successfully."
 color_echo "yellow" "Installing Flatseal..."
 flatpak install -y flathub com.github.tchx84.Flatseal
 color_echo "green" "Flatseal installed successfully."
-color_echo "yellow" "Installing ProtonUp-Qt..."
-flatpak install -y flathub net.davidotek.pupgui2
-color_echo "green" "ProtonUp-Qt installed successfully."
 
 
 # Customization
@@ -216,24 +183,12 @@ color_echo "green" "Google Fonts installed successfully."
 
 
 # Custom user-defined commands
-# Custom user-defined commands
-echo "Created with ❤️ for Open Source"
-
 
 # Before finishing, ensure we're in a safe directory
 cd /tmp || cd $ACTUAL_HOME || cd /
 
 # Finish
-echo "";
-echo "╔═════════════════════════════════════════════════════════════════════════╗";
-echo "║                                                                         ║";
-echo "║   ░█░█░█▀▀░█░░░█▀▀░█▀█░█▄█░█▀▀░░░▀█▀░█▀█░░░█▀▀░█▀▀░█▀▄░█▀█░█▀▄░█▀█░█░   ║";
-echo "║   ░█▄█░█▀▀░█░░░█░░░█░█░█░█░█▀▀░░░░█░░█░█░░░█▀▀░█▀▀░█░█░█░█░█▀▄░█▀█░▀░   ║";
-echo "║   ░▀░▀░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░░░░▀░░▀▀▀░░░▀░░░▀▀▀░▀▀░░▀▀▀░▀░▀░▀░▀░▀░   ║";
-echo "║                                                                         ║";
-echo "╚═════════════════════════════════════════════════════════════════════════╝";
-echo "";
-color_echo "green" "All steps completed. Enjoy!"
+color_echo "green" "All steps completed."
 
 # Prompt for reboot
 prompt_reboot
