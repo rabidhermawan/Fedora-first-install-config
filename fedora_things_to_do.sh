@@ -103,10 +103,20 @@ color_echo "yellow" "Installing essential applications..."
 dnf install -y btop fastfetch unzip git wget curl
 color_echo "green" "Essential applications installed successfully."
 
+# Install Office application
+color_echo "yellow" "Installing PDFArranger..."
+flatpak install flathub com.github.jeromerobert.pdfarranger
+color_echo "green" "PDFArranger installed successfully."
+
 # Install Internet & Communication applications
 color_echo "yellow" "Installing Vesktop..."
 flatpak install -y flathub dev.vencord.Vesktop
 color_echo "green" "Vesktop installed successfully."
+
+color_echo "yellow" "Installing Helium Browser..."
+dnf copr enable imput/helium
+dnf install helium-bin
+color_echo "green" "Helium Browser installed successfully."
 
 # Install Coding and DevOps applications
 color_echo "yellow" "Installing Visual Studio Code..."
@@ -120,12 +130,9 @@ dnf install -y code
 color_echo "green" "Visual Studio Code installed successfully."
 color_echo "yellow" "Installing GitHub Desktop..."
 
-# Install Github
 flatpak install -y flathub io.github.shiftey.Desktop
 color_echo "green" "GitHub Desktop installed successfully."
 
-# Install Docker
-# Remove old docker stuff if exists
 color_echo "yellow" "Installing Docker"
 dnf remove docker \
     docker-client \
@@ -138,12 +145,23 @@ dnf remove docker \
     docker-engine-selinux \
     docker-engine -y
 
-# Add Docker repo
 dnf config-manager addrepo --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo
-
-# Install all Docker stuff
 dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 color_echo "green" "Docker installed successfully."
+
+color_echo "yellow" "Installing Python..."
+dnf install -y python3
+dnf install -y python3-pip
+color_echo "green" "Python installed successfully."
+
+color_echo "yellow" "Installing Golang..."
+dnf install -y golang
+color_echo "green" "Golang installed successfully."
+
+
+color_echo "yellow" "Installing NodeJS..."
+dnf install -y node
+color_echo "green" "NodeJS installed successfully."
 
 # Install Media & Graphics applications
 color_echo "yellow" "Installing Spotify..."
@@ -154,10 +172,18 @@ color_echo "yellow" "Installing OBS Studio..."
 dnf install -y obs-studio
 color_echo "green" "OBS Studio installed successfully."
 
+color_echo "yellow" "Installing MPV..."
+dnf install -y mpv
+color_echo "green" "MPV installed successfully."
+
+color_echo "yellow" "Installing Kolourpaint..."
+dnf install -y kolourpaint
+color_echo "green" "Kolourpaint installed successfully."
+
 # Install Gaming & Emulation applications
-# color_echo "yellow" "Installing Steam..."
-# dnf install -y steam
-# color_echo "green" "Steam installed successfully."
+color_echo "yellow" "Installing Steam..."
+dnf install -y steam
+color_echo "green" "Steam installed successfully."
 
 # color_echo "yellow" "Installing Lutris..."
 # dnf install -y lutris
@@ -175,6 +201,12 @@ color_echo "green" "OBS Studio installed successfully."
 # flatpak install -y flathub net.davidotek.pupgui2
 # color_echo "green" "ProtonUp-Qt installed successfully."
 
+
+color_echo "yellow" "Installing Bottles..."
+flatpak install flathub com.usebottles.bottles
+color_echo "green" "Bottles installed successfully."
+
+
 # Install File Sharing & Download applications
 color_echo "yellow" "Installing qBittorrent..."
 dnf install -y qbittorrent
@@ -185,13 +217,12 @@ color_echo "yellow" "Installing Flatseal..."
 flatpak install -y flathub com.github.tchx84.Flatseal
 color_echo "green" "Flatseal installed successfully."
 
+color_echo "yellow" "Installing GParted..."
+dnf install -y gparted
+color_echo "green" "GParted installed successfully."
+
 
 # Customization
-# Install Microsoft Windows fonts (core)
-color_echo "yellow" "Installing Microsoft Fonts (core)..."
-dnf install -y curl cabextract xorg-x11-font-utils fontconfig
-rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
-color_echo "green" "Microsoft Fonts (core) installed successfully."
 
 # Install Google fonts collection
 color_echo "yellow" "Installing Google Fonts..."
