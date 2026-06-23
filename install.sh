@@ -309,7 +309,9 @@ if $C_CODING; then
     color_echo "green" "Visual Studio Code installed successfully."
     color_echo "yellow" "Installing GitHub Desktop..."
 
-    flatpak install -y flathub io.github.shiftey.Desktop
+    rpm --import https://mirror.mwt.me/shiftkey-desktop/gpgkey
+    sh -c 'echo -e "[mwt-packages]\nname=GitHub Desktop\nbaseurl=https://mirror.mwt.me/shiftkey-desktop/rpm\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://mirror.mwt.me/shiftkey-desktop/gpgkey" > /etc/yum.repos.d/mwt-packages.repo'
+    dnf install -y github-desktop
     color_echo "green" "GitHub Desktop installed successfully."
 
     color_echo "yellow" "Installing Docker"
