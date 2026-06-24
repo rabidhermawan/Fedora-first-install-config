@@ -56,13 +56,10 @@ color_echo "yellow" "Installing NVIDIA drivers..."
 dnf install -y akmod-nvidia
 handle_error "Failed to install NVIDIA drivers"
 
-# Install CUDA (optional)
-read -p "Do you want to install CUDA? (y/n): " install_cuda
-if [[ $install_cuda =~ ^[Yy]$ ]]; then
+# Install CUDA
 color_echo "yellow" "Installing CUDA..."
 dnf install -y xorg-x11-drv-nvidia-cuda
 handle_error "Failed to install CUDA"
-fi
 
 color_echo "green" "NVIDIA driver installation completed."
 echo "Installation complete. Please run:"
